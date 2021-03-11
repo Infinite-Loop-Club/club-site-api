@@ -1,9 +1,11 @@
 import express from 'express';
 import Logger from 'js-logger';
+import cors from 'cors';
 import chalk from 'chalk';
 import 'dotenv/config';
 
 import { requestLogger } from './middlewares';
+import { UserRouter } from './routers';
 
 const PORT = process.env.PORT || 5000;
 Logger.useDefaults({
@@ -15,6 +17,10 @@ Logger.useDefaults({
 const server = express();
 
 server.use(requestLogger);
+server.use(cors());
+server.use(express.json());
+
+server.use('/user', UserRouter);
 
 server.get('*', (_req, res) => {
   res.sendStatus(200);
