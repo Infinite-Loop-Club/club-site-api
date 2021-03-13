@@ -11,9 +11,11 @@ import { UserRouter } from './routers';
 const { PORT, DB_SERVER } = process.env;
 
 Logger.useDefaults({
-  defaultLevel: process.env.NODE_ENV === 'production' ? Logger.ERROR : Logger.INFO,
+  defaultLevel: process.env.NODE_ENV === 'production' ? Logger.ERROR : Logger.DEBUG,
   formatter: messages => {
-    messages.unshift(`[${new Date().toLocaleDateString('en-GB')} ${new Date().toLocaleTimeString()}]`);
+    messages.unshift(
+      `[${new Date().toLocaleDateString('en-GB')} ${new Date().toLocaleTimeString()}]`
+    );
   }
 });
 

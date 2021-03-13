@@ -13,6 +13,6 @@ export const newUser = async (req, res) => {
     return res.status(200).json({ message: 'Successfully registered', data: userInCollection });
   } catch (err) {
     Logger.debug(err);
-    return res.status(500).json({ message: 'Could not complete registration' });
+    return res.status(500).json({ message: 'Could not complete registration', error: err });
   }
 };
