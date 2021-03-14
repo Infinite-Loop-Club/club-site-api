@@ -21,7 +21,7 @@ export const newPost = async (req, res) => {
     return res.status(200).json({ message: 'Successfully posted', data: postDocument });
   } catch (err) {
     Logger.debug(err);
-    return res.status(500).json({ message: 'Could not create post', error: err });
+    return res.status(400).json({ message: 'Could not create post', error: err });
   }
 };
 
@@ -58,6 +58,6 @@ export const getPostById = async (req, res) => {
     return res.status(200).json({ message: 'Post retrieved', data: post });
   } catch (error) {
     Logger.error('Error retrieving post', error);
-    return res.status(500).json({ message: 'Error retrieving post', error });
+    return res.status(400).json({ message: 'Error retrieving post', error });
   }
 };

@@ -3,9 +3,9 @@ import { Schema, model } from 'mongoose';
 const UserSchema = new Schema(
   {
     registerNumber: {
-      type: Number,
-      min: 810010000000,
-      max: 810030000000,
+      type: String,
+      minlength: 12,
+      maxlength: 12,
       required: true,
       unique: true
     },
