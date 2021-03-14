@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import 'dotenv/config';
 
 import { requestLogger } from './middlewares';
-import { UserRouter } from './routers';
+import { PostRouter, UserRouter } from './routers';
 
 const { PORT, DB_SERVER } = process.env;
 
@@ -26,6 +26,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use('/user', UserRouter);
+server.use('/post', PostRouter);
 
 server.get('*', (_req, res) => {
   res.sendStatus(200);
