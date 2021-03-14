@@ -2,6 +2,14 @@ import Logger from 'js-logger';
 
 import { User } from '../models';
 
+/**
+ ** New User
+ *
+ * @route: /user/new
+ * @method: POST
+ * @requires: body { registerNumber, name, email, phoneNumber, year }
+ * @returns: 'Successfully registered' | 'Could not complete registration'
+ */
 export const newUser = async (req, res) => {
   const { body } = req;
   Logger.debug('Acknowledged: ', body);
