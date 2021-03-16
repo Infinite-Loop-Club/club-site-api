@@ -1,6 +1,6 @@
 import Logger from 'js-logger';
 
-import { Post } from '../models';
+import { Post, User } from '../models';
 
 /**
  ** New Post
@@ -59,5 +59,33 @@ export const getPostById = async (req, res) => {
   } catch (error) {
     Logger.error('Error retrieving post', error);
     return res.status(400).json({ message: 'Error retrieving post', error });
+  }
+};
+
+/**
+ ** Delete Post
+ *
+ * @route: /post/delete
+ * @method: DELETE
+ * @requires: body { id }
+ * @returns: 'Successfully deleted' | 'Could not delete post'
+ */
+export const deletePost = async (req, res) => {
+  const {
+    body: { id },
+    headers: { authorization }
+  } = req;
+  Logger.debug('Acknowledged: ', id, authorization);
+  if (String(authorization).split(' ')[1] !== process.env.auth) {
+    return res.status(401).json({ message: 'You are not allowed to perform this operation' });
+  }
+
+  try {
+    await User.findByIdAndDelete(id);
+    Logger.debug('Post deleted successfully.');
+    return res.status(200).json({ message: 'Successfully deleted' });
+  } catch (err) {
+    Logger.debug(err);
+    return res.status(400).json({ message: 'Could not delete post', error: err });
   }
 };
