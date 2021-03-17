@@ -72,13 +72,9 @@ export const getPostById = async (req, res) => {
  */
 export const deletePost = async (req, res) => {
   const {
-    body: { id },
-    headers: { authorization }
+    body: { id }
   } = req;
-  Logger.debug('Acknowledged: ', id, authorization);
-  if (String(authorization).split(' ')[1] !== process.env.auth) {
-    return res.status(401).json({ message: 'You are not allowed to perform this operation' });
-  }
+  Logger.debug('Acknowledged: ', id);
 
   try {
     await User.findByIdAndDelete(id);
