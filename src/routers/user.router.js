@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { newUser } from '../controllers/user.controller';
+import { adminOnly } from '../middlewares';
+import { newUser, getUsers } from '../controllers/user.controller';
 
 const router = Router();
 
 router.post('/new', newUser);
+router.get('/all', adminOnly, getUsers);
 
 export default router;

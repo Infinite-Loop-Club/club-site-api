@@ -47,3 +47,21 @@ export const newUser = async (req, res) => {
     return res.status(500).json({ message: 'Could not complete registration', error: err });
   }
 };
+
+/**
+ ** Get Users
+ *
+ * @route: /user/all
+ * @method: GET
+ * @requires: { auth }
+ * @returns: list of registered students { id, registerNumber, name }
+ */
+export const getUsers = async (_req, res) => {
+  try {
+    const students = await User.find({}, { _id: 1, name: 1, registerNumber: 1 });
+    return res.status(200).json({ message: 'Retrieved successfully', data: students });
+  } catch (error) {
+    Logger.error(error);
+    return res.status(500).json({ message: 'Error retrieving data', error });
+  }
+};
