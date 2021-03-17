@@ -65,3 +65,61 @@ export const getUsers = async (_req, res) => {
     return res.status(500).json({ message: 'Error retrieving data', error });
   }
 };
+
+/**
+ ** Get User by ID
+ *
+ * @route: /user?id=:id
+ * @method: GET
+ * @requires: { auth }
+ * @returns: registered student <User>
+ */
+export const getUserById = async (req, res) => {
+  console.log('dcnk');
+  const { id } = req.params;
+  try {
+    const student = await User.findById(id);
+    return res.status(200).json({ message: 'Retrieved successfully', data: student });
+  } catch (error) {
+    Logger.error(error);
+    return res.status(500).json({ message: 'Error retrieving data', error });
+  }
+};
+
+/**
+ ** Get User by Register Number
+ *
+ * @route: /user?reg=:registerNumber
+ * @method: GET
+ * @requires: { auth }
+ * @returns: registered student <User>
+ */
+export const getUserByRegisterNumber = async (req, res) => {
+  const { registerNumber } = req.params;
+  try {
+    const student = await User.findOne({ registerNumber });
+    return res.status(200).json({ message: 'Retrieved successfully', data: student });
+  } catch (error) {
+    Logger.error(error);
+    return res.status(500).json({ message: 'Error retrieving data', error });
+  }
+};
+
+/**
+ ** Get User by Email
+ *
+ * @route: /user?email=:email
+ * @method: GET
+ * @requires: { auth }
+ * @returns: registered student <User>
+ */
+export const getUserByEmail = async (req, res) => {
+  const { email } = req.params;
+  try {
+    const student = await User.findOne({ email });
+    return res.status(200).json({ message: 'Retrieved successfully', data: student });
+  } catch (error) {
+    Logger.error(error);
+    return res.status(500).json({ message: 'Error retrieving data', error });
+  }
+};
