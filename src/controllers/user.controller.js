@@ -7,13 +7,13 @@ import { User } from '../models';
  *
  * @route: /user/new
  * @method: POST
- * @requires: body { registerNumber, name, email, phoneNumber, year }
+ * @requires: body { registerNumber, name, email, phoneNumber, year, imageUrl }
  * @returns: 'Successfully registered' | 'Could not complete registration'
  */
 export const newUser = async (req, res) => {
   const { body } = req;
   Logger.debug('Acknowledged: ', body);
-  const mandatoryFields = ['name', 'registerNumber', 'email', 'phoneNumber', 'year'];
+  const mandatoryFields = ['name', 'registerNumber', 'email', 'phoneNumber', 'year', 'imageUrl'];
 
   try {
     for (const mandatoryField of mandatoryFields) {
