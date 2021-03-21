@@ -32,7 +32,8 @@ export const newUser = async (req, res) => {
         });
       }
     }
-    const theNewUser = new User(body);
+    const noOfMembers = await User.count();
+    const theNewUser = new User({ ...body, membershipNumber: noOfMembers + 1 });
     const userDocument = await theNewUser.save();
     Logger.debug('Registration successful.');
     return res.status(200).json({ message: 'Successfully registered', data: userDocument });
@@ -75,7 +76,6 @@ export const getUsers = async (_req, res) => {
  * @returns: registered student <User>
  */
 export const getUserById = async (req, res) => {
-  console.log('dcnk');
   const { id } = req.params;
   try {
     const student = await User.findById(id);

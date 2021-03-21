@@ -15,7 +15,8 @@ const UserSchema = new Schema(
     department: { type: String, required: true, default: 'CSE' },
     phoneNumber: { type: Number, min: 4444444444, max: 9999999999, required: true },
     year: { type: Number, required: true },
-    imageUrl: { type: String, required: true }
+    imageUrl: { type: String, required: true },
+    membershipNumber: { type: Number, min: 1, max: 999999, unique: true, required: true }
   },
   {
     timestamps: true
