@@ -7,7 +7,7 @@ import { Post, User } from '../models';
  *
  * @route: /post/new
  * @method: POST
- * @requires: body { title, content, description ,author? ,url? }
+ * @requires: body { title, content, description ,author?, attachment? }
  * @returns: 'Successfully posted' | 'Could not create post'
  */
 export const newPost = async (req, res) => {

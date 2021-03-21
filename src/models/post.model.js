@@ -6,7 +6,7 @@ const PostSchema = new Schema(
     description: { type: String, required: true },
     content: { type: String, required: true },
     author: { type: String, default: 'admin' },
-    url: { type: String }
+    attachment: { type: String }
   },
   {
     timestamps: true
