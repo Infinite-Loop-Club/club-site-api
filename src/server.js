@@ -8,7 +8,9 @@ import 'dotenv/config';
 import { requestLogger } from './middlewares';
 import { PostRouter, UserRouter } from './routers';
 
-const { PORT, DB_SERVER } = process.env;
+const { PORT, DEV_DB_SERVER, PROD_DB_SERVER } = process.env;
+
+const DB_SERVER = process.env.NODE_ENV === 'production' ? PROD_DB_SERVER : DEV_DB_SERVER;
 
 Logger.useDefaults({
   defaultLevel: process.env.NODE_ENV === 'production' ? Logger.ERROR : Logger.DEBUG,
