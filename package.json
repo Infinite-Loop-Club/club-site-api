@@ -1,7 +1,7 @@
 {
-  "name": "my-app-backend",
-  "version": "0.0.1",
-  "description": "This is the backend for my-app",
+  "name": "club-site-api",
+  "version": "1.0.0",
+  "description": "This is the backend for infinite loop club-site",
   "main": "build/server.js",
   "module": "src/server.js",
   "scripts": {
@@ -24,16 +24,16 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "js-logger": "^1.6.1",
-    "mongoose": "^5.11.19",
+    "mongoose": "^5.12.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "^7.13.10",
-    "@babel/node": "^7.13.10",
+    "@babel/node": "^7.13.12",
     "@babel/plugin-transform-runtime": "^7.13.10",
-    "@babel/preset-env": "^7.13.10",
-    "eslint": "^7.21.0",
+    "@babel/preset-env": "^7.13.12",
+    "eslint": "^7.22.0",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1"
   }
