@@ -6,8 +6,8 @@ import {
   getUsers,
   newUser,
   getCSV
-} from '../controllers/user.controller';
-import { adminOnly } from '../middlewares';
+} from 'controllers/user.controller';
+import { adminOnly } from 'middlewares';
 
 const router = Router();
 

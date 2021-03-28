@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { adminOnly } from '../middlewares';
-import { deletePost, getPostById, getPosts, newPost } from '../controllers/post.controller';
+import { adminOnly } from 'middlewares';
+import { deletePost, getPostById, getPosts, newPost } from 'controllers/post.controller';
 
 const router = Router();
 

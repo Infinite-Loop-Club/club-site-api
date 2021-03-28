@@ -1,6 +1,6 @@
 import Logger from 'js-logger';
 
-import { User } from '../models';
+import { User } from 'models';
 
 /**
  ** New User
