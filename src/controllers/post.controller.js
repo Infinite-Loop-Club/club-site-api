@@ -1,6 +1,6 @@
 import Logger from 'js-logger';
 
-import { Post, User } from '../models';
+import { Post, User } from 'models';
 
 /**
  ** New Post

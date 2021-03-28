@@ -5,8 +5,8 @@ import cors from 'cors';
 import chalk from 'chalk';
 import 'dotenv/config';
 
-import { requestLogger } from './middlewares';
-import { PostRouter, UserRouter } from './routers';
+import { requestLogger } from 'middlewares';
+import { PostRouter, UserRouter } from 'routers';
 
 const { PORT, HOST, DEV_DB_SERVER, PROD_DB_SERVER, NODE_ENV } = process.env;
 
