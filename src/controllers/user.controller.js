@@ -138,14 +138,14 @@ export const getCSV = async (req, res) => {
   if (!body.type) {
     return res
       .status(500)
-      .json({ message: 'Error retrieving data', error: 'type - filed required' });
+      .json({ message: 'Error retrieving data', error: '"type" field required' });
   }
   try {
     const student = await User.find({}, { [body.type]: 1, _id: 0 });
     var csv = '';
     student.forEach(data => {
       if (!data[body.type]) return;
-      csv += csv === '' ? `${data[body.type]}` : `,${data[body.type]}`;
+      csv += csv === '' ? data[body.type] : ',' + data[body.type];
     });
     return res.status(200).json({ message: 'Retrieved successfully', data: csv });
   } catch (error) {
