@@ -32,8 +32,8 @@ export const newUser = async (req, res) => {
         });
       }
     }
-    const lastOne = await User.find({}).sort({ membershipNumber: -1 }).limit(1);
-    const membershipNumber = lastOne[0]._doc.membershipNumber + 1;
+    const lastOne = await User.find({}).sort({ membershipNumber: -1 }).limit(1)[0];
+    const membershipNumber = lastOne._doc.membershipNumber + 1;
     const theNewUser = new User({ ...body, membershipNumber });
     const userDocument = await theNewUser.save();
     Logger.debug('Registration successful.');
