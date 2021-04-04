@@ -20,7 +20,7 @@ export const newPost = async (req, res) => {
     Logger.debug('Post created successfully.');
     return res.status(200).json({ message: 'Successfully posted', data: postDocument });
   } catch (err) {
-    Logger.debug(err);
+    Logger.error(err);
     return res.status(400).json({ message: 'Could not create post', error: err });
   }
 };
@@ -81,7 +81,7 @@ export const deletePost = async (req, res) => {
     Logger.debug('Post deleted successfully.');
     return res.status(200).json({ message: 'Successfully deleted' });
   } catch (err) {
-    Logger.debug(err);
+    Logger.error(err);
     return res.status(400).json({ message: 'Could not delete post', error: err });
   }
 };
