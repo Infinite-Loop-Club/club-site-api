@@ -44,7 +44,12 @@ server.once('listening', async () => {
 
   try {
     Logger.debug(`Database server is at ${chalk.cyan(DB_SERVER)}`);
-    const options = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true };
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    };
     await mongoose.connect(DB_SERVER, options);
     Logger.info(`Database connection ${chalk.greenBright('successful')}`);
   } catch (err) {
