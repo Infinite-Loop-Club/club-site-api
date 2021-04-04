@@ -38,7 +38,7 @@ export const newUser = async (req, res) => {
     Logger.debug('Registration successful.');
     return res.status(200).json({ message: 'Successfully registered', data: userDocument });
   } catch (err) {
-    Logger.debug(err);
+    Logger.error(err);
     if (err.code === 11000) {
       const errorKeys = Object.keys(err.keyPattern);
       return res
