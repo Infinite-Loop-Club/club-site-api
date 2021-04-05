@@ -53,7 +53,7 @@ export const sendVoteOTP = async (req, res) => {
           <h3>Your OTP for voting is:</h3>
 		      <h1>${otp}</h1>
           <br />
-          <p>If you don't know why you're getting this email, please report to the admins on the <a href='https://discord.gg/scd4DryNjs' discord server></a>.</p>
+          <p>If you don't know why you're getting this email, please report to the admins on the <a href='https://discord.gg/scd4DryNjs'>discord server</a>.</p>
         `
     };
 
