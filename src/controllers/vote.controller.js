@@ -32,6 +32,7 @@ export const sendVoteOTP = async (req, res) => {
       if (vote._doc.done) {
         return res.status(401).json({ message: 'You have already casted your vote!' });
       } else {
+        // if they have generate otp already, but timed out before casting vote
         vote.otp = otp;
         await vote.save();
       }
@@ -52,7 +53,7 @@ export const sendVoteOTP = async (req, res) => {
           <h3>Your OTP for voting is:</h3>
 		      <h1>${otp}</h1>
           <br />
-          <p>If you don't know why you're getting this email, please report to 'infiniteloopclub.noreply@gmail.com'</p>
+          <p>If you don't know why you're getting this email, please report to the admins on the <a href='https://discord.gg/scd4DryNjs' discord server</a>.</p>
         `
     };
 
@@ -93,25 +94,25 @@ export const verifyOTP = async (req, res) => {
       otp
     });
 
-    if (vote) {
-      if (vote._doc.done) {
-        return res.status(401).json({ message: 'You have already casted your vote!' });
-      } else {
-        const token = await jwt.sign(
-          {
-            data: {
-              id: vote._doc.id,
-              registerNumber: vote._doc.registerNumber
-            }
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: '.25h' }
-        );
-        return res.status(200).json({ done: true, message: 'OTP Verified', token });
-      }
-    } else {
+    if (!vote) {
       return res.status(401).json({ message: 'Invalid OTP!' });
     }
+
+    if (vote._doc.done) {
+      return res.status(401).json({ message: 'You have already casted your vote!' });
+    }
+
+    const token = await jwt.sign(
+      {
+        data: {
+          id: vote._doc.id,
+          registerNumber: vote._doc.registerNumber
+        }
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '.25h' }
+    );
+    return res.status(200).json({ done: true, message: 'OTP Verified', token });
   } catch (error) {
     Logger.error(error.message);
     if (!error.code) {
@@ -142,25 +143,25 @@ export const makeVote = async (req, res) => {
       id: mongoose.Types.ObjectId(data.id)
     });
 
-    if (vote) {
-      if (vote._doc.done) {
-        return res.status(401).json({ message: 'You have already casted your vote!' });
-      } else {
-        vote.done = true;
-        vote.president = president;
-        vote.vicePresident = vicePresident;
-        vote.secretary = secretary;
-        vote.youthRepresentative = youthRepresentative;
-        await vote.save();
-        return res.status(200).json({ done: true, message: 'Vote casted successfully' });
-      }
-    } else {
-      return res.status(500).json({ message: 'Invalid User!' });
+    if (!vote) {
+      return res.status(401).json({ message: 'Invalid User!' });
     }
+
+    if (vote._doc.done) {
+      return res.status(403).json({ message: 'You have already casted your vote!' });
+    }
+
+    vote.done = true;
+    vote.president = president;
+    vote.vicePresident = vicePresident;
+    vote.secretary = secretary;
+    vote.youthRepresentative = youthRepresentative;
+    await vote.save();
+    return res.status(200).json({ done: true, message: 'Vote casted successfully' });
   } catch (error) {
     Logger.error(error.message);
     if (error.message === 'jwt expired') {
-      return res.status(500).json({ message: 'Request Timeout ! please try again later' });
+      return res.status(500).json({ message: 'Request timed out, please try again later' });
     } else if (!error.code) {
       return res.status(500).json({ message: 'Invalid User!' });
     }
