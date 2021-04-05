@@ -16,58 +16,57 @@ export const sendVoteOTP = async (req, res) => {
   const { registerNumber } = req.body;
 
   if (!registerNumber) {
-    return res.status(400).json({ message: 'Register no required !' });
+    return res.status(400).json({ message: 'Register number is required!' });
   }
+
   try {
     const student = await User.findOne({ registerNumber });
 
-    if (student) {
-      const vote = await Vote.findOne({ id: student._id });
-      const otp = Math.floor(100000 + Math.random() * 900000);
-      if (vote) {
-        if (vote._doc.done) {
-          return res.status(401).json({ message: 'You have voted already !' });
-        } else {
-          vote.otp = otp;
-          await vote.save();
-        }
-      } else {
-        const newVote = new Vote({
-          id: student._doc._id,
-          registerNumber: student._doc.registerNumber,
-          otp
-        });
-        await newVote.save();
-      }
+    if (!student) {
+      return res.status(401).json({ message: 'You are not a member of ILC!' });
+    }
 
-      let mailOptions = {
-        from: '"Infinite Loop Club" infiniteloopclub.noreply@gmail.com',
-        to: student._doc.email,
-        subject: 'OTP for Voting',
-        html: ` 
-          <h3>Your OTP for Voting is:</h3> 
+    const vote = await Vote.findOne({ id: student._id });
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    if (vote) {
+      if (vote._doc.done) {
+        return res.status(401).json({ message: 'You have already casted your vote!' });
+      } else {
+        vote.otp = otp;
+        await vote.save();
+      }
+    } else {
+      const newVote = new Vote({
+        id: student._doc._id,
+        registerNumber: student._doc.registerNumber,
+        otp
+      });
+      await newVote.save();
+    }
+
+    let mailOptions = {
+      from: '"Infinite Loop Club" infiniteloopclub.noreply@gmail.com',
+      to: student._doc.email,
+      subject: 'OTP for Voting',
+      html: `
+          <h3>Your OTP for voting is:</h3>
 		      <h1>${otp}</h1>
           <br />
           <p>If you don't know why you're getting this email, please report to 'infiniteloopclub.noreply@gmail.com'</p>
         `
-      };
+    };
 
-      try {
-        await transporter.sendMail(mailOptions);
-      } catch (err) {
-        return res
-          .status(500)
-          .json({ message: 'Error while sending email ! Please try again later.' });
-      }
-
-      return res.status(200).json({
-        done: true,
-        message: 'OTP send successfully',
-        userID: student._doc._id
-      });
-    } else {
-      return res.status(401).json({ message: 'This register no is not eligible for Voting !' });
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (err) {
+      return res.status(500).json({ message: 'Error sending OTP! Please try again later.' });
     }
+
+    return res.status(200).json({
+      done: true,
+      message: 'OTP sent successfully',
+      userID: student._doc._id
+    });
   } catch (error) {
     Logger.error(error);
     return res.status(500).json({ message: 'Error retrieving data', error });
@@ -85,7 +84,7 @@ export const verifyOTP = async (req, res) => {
   const { userID, otp } = req.body;
 
   if (!userID || !otp) {
-    return res.status(400).json({ message: 'Fields required !' });
+    return res.status(400).json({ message: 'Both the fields are mandatory!' });
   }
 
   try {
@@ -96,7 +95,7 @@ export const verifyOTP = async (req, res) => {
 
     if (vote) {
       if (vote._doc.done) {
-        return res.status(401).json({ message: 'You have voted already !' });
+        return res.status(401).json({ message: 'You have already casted your vote!' });
       } else {
         const token = await jwt.sign(
           {
@@ -116,7 +115,7 @@ export const verifyOTP = async (req, res) => {
   } catch (error) {
     Logger.error(error.message);
     if (!error.code) {
-      return res.status(500).json({ message: 'Invalid User !' });
+      return res.status(500).json({ message: 'Invalid User!' });
     }
     return res.status(500).json({ message: 'Error retrieving data', error });
   }
@@ -134,7 +133,7 @@ export const makeVote = async (req, res) => {
   const { token, president, vicePresident, secretary, youthRepresentative } = req.body;
 
   if (!token || !president || !vicePresident || !secretary || !youthRepresentative) {
-    return res.status(400).json({ message: 'Fields required !' });
+    return res.status(400).json({ message: 'Both the fields are mandatory!' });
   }
 
   try {
@@ -145,7 +144,7 @@ export const makeVote = async (req, res) => {
 
     if (vote) {
       if (vote._doc.done) {
-        return res.status(401).json({ message: 'You have voted already !' });
+        return res.status(401).json({ message: 'You have already casted your vote!' });
       } else {
         vote.done = true;
         vote.president = president;
@@ -153,17 +152,17 @@ export const makeVote = async (req, res) => {
         vote.secretary = secretary;
         vote.youthRepresentative = youthRepresentative;
         await vote.save();
-        return res.status(200).json({ done: true, message: 'Voted Successfully' });
+        return res.status(200).json({ done: true, message: 'Vote casted successfully' });
       }
     } else {
-      return res.status(500).json({ message: 'Invalid User !' });
+      return res.status(500).json({ message: 'Invalid User!' });
     }
   } catch (error) {
     Logger.error(error.message);
     if (error.message === 'jwt expired') {
       return res.status(500).json({ message: 'Request Timeout ! please try again later' });
     } else if (!error.code) {
-      return res.status(500).json({ message: 'Invalid User !' });
+      return res.status(500).json({ message: 'Invalid User!' });
     }
     return res.status(500).json({ message: 'Error retrieving data', error });
   }
