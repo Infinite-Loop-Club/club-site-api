@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import 'dotenv/config';
 
 import { requestLogger } from 'middlewares';
-import { PostRouter, UserRouter } from 'routers';
+import { PostRouter, UserRouter, VoteRouter } from 'routers';
 
 const { PORT, HOST, DEV_DB_SERVER, PROD_DB_SERVER, NODE_ENV } = process.env;
 
@@ -30,6 +30,7 @@ app.use(express.json());
 
 app.use('/user', UserRouter);
 app.use('/post', PostRouter);
+app.use('/vote', VoteRouter);
 
 app.get('*', (_req, res) => {
   res.sendStatus(200);
