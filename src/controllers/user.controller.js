@@ -11,7 +11,6 @@ import { User } from 'models';
  * @returns: 'Successfully registered' | 'Could not complete registration'
  */
 export const newUser = async (req, res) => {
-  return res.status(401).json({ message: 'Registration is temporary closed !' });
   const { body } = req;
   Logger.debug('Acknowledged: ', body);
   const mandatoryFields = ['name', 'registerNumber', 'email', 'phoneNumber', 'year', 'imageUrl'];
