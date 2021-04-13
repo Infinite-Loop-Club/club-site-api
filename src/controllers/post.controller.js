@@ -1,6 +1,7 @@
 import Logger from 'js-logger';
+import Mongoose from 'mongoose';
 
-import { Post, User } from 'models';
+import { Post, validatePost, User } from 'models';
 
 /**
  ** New Post
@@ -13,9 +14,14 @@ import { Post, User } from 'models';
 export const newPost = async (req, res) => {
   const { body } = req;
   Logger.debug('Acknowledged: ', body);
-  const theNewPost = new Post(body);
+
+  const { error } = validatePost(body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
 
   try {
+    const theNewPost = new Post(body);
     const postDocument = await theNewPost.save();
     Logger.debug('Post created successfully.');
     return res.status(200).json({ message: 'Successfully posted', data: postDocument });
@@ -52,8 +58,17 @@ export const getPosts = async (_req, res) => {
  * @returns: 'Post retrieved' | 'Error retrieving post'
  */
 export const getPostById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: '"id" field required' });
+  }
+
   try {
-    const { id } = req.params;
+    if (!Mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: '"id" must be valid' });
+    }
+
     const post = await Post.findById(id);
     return res.status(200).json({ message: 'Post retrieved', data: post });
   } catch (error) {
@@ -76,7 +91,15 @@ export const deletePost = async (req, res) => {
   } = req;
   Logger.debug('Acknowledged: ', id);
 
+  if (!id) {
+    return res.status(400).json({ message: '"id" field required' });
+  }
+
   try {
+    if (!Mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: '"id" must be valid' });
+    }
+
     await User.findByIdAndDelete(id);
     Logger.debug('Post deleted successfully.');
     return res.status(200).json({ message: 'Successfully deleted' });
