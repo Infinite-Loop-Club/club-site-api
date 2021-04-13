@@ -153,24 +153,3 @@ export const getCSV = async (req, res) => {
     return res.status(500).json({ message: 'Error retrieving data', error });
   }
 };
-
-/**
- ** update Department as IT by ID
- *
- * @route: /user?id=:id
- * @method: GET
- * @requires:
- * @returns: message
- */
-export const updateDeptIT = async (req, res) => {
-  const { id } = req.params;
-  try {
-    await User.findByIdAndUpdate(id, { department: 'IT' });
-    res.set('Content-Type', 'text/html');
-    res.send(Buffer.from('<h2>Your Department has been changed to IT.</h2><h3>Thank You !!!</h3>'));
-    return;
-  } catch (error) {
-    Logger.error(error);
-    return res.send('Unable to update! please try again later');
-  }
-};
