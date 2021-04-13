@@ -1,40 +1,32 @@
 import Logger from 'js-logger';
+import Mongoose from 'mongoose';
 
-import { User } from 'models';
+import { User, validateUser } from 'models';
 
 /**
  ** New User
  *
  * @route: /user/new
  * @method: POST
- * @requires: body { registerNumber, name, email, phoneNumber, year, imageUrl }
+ * @requires: body { registerNumber, name, email, gender, department, phoneNumber, year, imageUrl }
  * @returns: 'Successfully registered' | 'Could not complete registration'
  */
 export const newUser = async (req, res) => {
   const { body } = req;
   Logger.debug('Acknowledged: ', body);
-  const mandatoryFields = ['name', 'registerNumber', 'email', 'phoneNumber', 'year', 'imageUrl'];
+
   try {
-    for (const mandatoryField of mandatoryFields) {
-      if (!body[mandatoryField]) {
-        return res.status(400).json({
-          message: `Validation Error: '${mandatoryField}' is required`,
-          error: {
-            name: 'ValidationError',
-            keyPattern: {
-              [mandatoryField]: 1
-            },
-            keyValue: {
-              [mandatoryField]: String(body[mandatoryField])
-            }
-          }
-        });
-      }
+    const { error } = validateUser(body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
     }
+
     const lastOne = (await User.find({}).sort({ membershipNumber: -1 }).limit(1))[0];
-    const membershipNumber = lastOne._doc.membershipNumber + 1;
+    const membershipNumber = lastOne ? lastOne._doc.membershipNumber + 1 : 1;
+
     const theNewUser = new User({ ...body, membershipNumber });
     const userDocument = await theNewUser.save();
+
     Logger.debug('Registration successful.');
     return res.status(200).json({ message: 'Successfully registered', data: userDocument });
   } catch (err) {
@@ -70,14 +62,23 @@ export const getUsers = async (_req, res) => {
 /**
  ** Get User by ID
  *
- * @route: /user?id=:id
+ * @route: /user/id=:id
  * @method: GET
  * @requires: { auth }
  * @returns: registered student <User>
  */
 export const getUserById = async (req, res) => {
   const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: '"id" field required' });
+  }
+
   try {
+    if (!Mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: '"id" must be valid' });
+    }
+
     const student = await User.findById(id);
     return res.status(200).json({ message: 'Retrieved successfully', data: student });
   } catch (error) {
@@ -96,6 +97,11 @@ export const getUserById = async (req, res) => {
  */
 export const getUserByRegisterNumber = async (req, res) => {
   const { registerNumber } = req.params;
+
+  if (!registerNumber) {
+    return res.status(400).json({ message: '"registerNumber" field required' });
+  }
+
   try {
     const student = await User.findOne({ registerNumber });
     return res.status(200).json({ message: 'Retrieved successfully', data: student });
@@ -115,6 +121,11 @@ export const getUserByRegisterNumber = async (req, res) => {
  */
 export const getUserByEmail = async (req, res) => {
   const { email } = req.params;
+
+  if (!email) {
+    return res.status(400).json({ message: '"email" field required' });
+  }
+
   try {
     const student = await User.findOne({ email });
     return res.status(200).json({ message: 'Retrieved successfully', data: student });
@@ -133,19 +144,20 @@ export const getUserByEmail = async (req, res) => {
  * @returns: data in CSV format
  */
 export const getCSV = async (req, res) => {
-  const { body } = req;
+  const {
+    body: { type }
+  } = req;
 
-  if (!body.type) {
-    return res
-      .status(500)
-      .json({ message: 'Error retrieving data', error: '"type" field required' });
+  if (!type) {
+    return res.status(500).json({ message: '"type" field required' });
   }
+
   try {
-    const student = await User.find({}, { [body.type]: 1, _id: 0 });
+    const student = await User.find({}, { [type]: 1, _id: 0 });
     var csv = '';
     student.forEach(data => {
-      if (!data[body.type]) return;
-      csv += csv === '' ? data[body.type] : ',' + data[body.type];
+      if (!data[type]) return;
+      csv += csv === '' ? data[type] : ',' + data[type];
     });
     return res.status(200).json({ message: 'Retrieved successfully', data: csv });
   } catch (error) {
