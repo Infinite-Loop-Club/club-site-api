@@ -80,6 +80,9 @@ export const getUserById = async (req, res) => {
     }
 
     const student = await User.findById(id);
+    if (!student) {
+      return res.status(404).json({ message: 'User not exist' });
+    }
     return res.status(200).json({ message: 'Retrieved successfully', data: student });
   } catch (error) {
     Logger.error(error);
@@ -103,7 +106,14 @@ export const getUserByRegisterNumber = async (req, res) => {
   }
 
   try {
+    if (!Number(registerNumber)) {
+      return res.status(400).json({ message: '"registerNumber" must be valid' });
+    }
+
     const student = await User.findOne({ registerNumber });
+    if (!student) {
+      return res.status(404).json({ message: 'User not exist' });
+    }
     return res.status(200).json({ message: 'Retrieved successfully', data: student });
   } catch (error) {
     Logger.error(error);
@@ -128,6 +138,9 @@ export const getUserByEmail = async (req, res) => {
 
   try {
     const student = await User.findOne({ email });
+    if (!student) {
+      return res.status(404).json({ message: 'User not exist' });
+    }
     return res.status(200).json({ message: 'Retrieved successfully', data: student });
   } catch (error) {
     Logger.error(error);
@@ -149,7 +162,7 @@ export const getCSV = async (req, res) => {
   } = req;
 
   if (!type) {
-    return res.status(500).json({ message: '"type" field required' });
+    return res.status(400).json({ message: '"type" field required' });
   }
 
   try {
