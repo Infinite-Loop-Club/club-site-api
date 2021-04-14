@@ -8,10 +8,12 @@ import 'dotenv/config';
 import { requestLogger } from 'middlewares';
 import { PostRouter, UserRouter } from 'routers';
 
-const { PORT, HOST, DEV_DB_SERVER, PROD_DB_SERVER, NODE_ENV } = process.env;
+const { PORT, HOST, DEV_DB_SERVER, TEST_DB_SERVER, PROD_DB_SERVER, NODE_ENV } = process.env;
 
-const DB_SERVER = NODE_ENV === 'production' ? PROD_DB_SERVER : DEV_DB_SERVER;
-const LOGGER_LEVEL = NODE_ENV === 'production' ? Logger.WARN : Logger.DEBUG;
+const DB_SERVER =
+  NODE_ENV === 'production' ? PROD_DB_SERVER : NODE_ENV === 'test' ? TEST_DB_SERVER : DEV_DB_SERVER;
+const LOGGER_LEVEL =
+  NODE_ENV === 'production' ? Logger.ERROR : NODE_ENV === 'test' ? Logger.OFF : Logger.DEBUG;
 
 Logger.useDefaults({
   defaultLevel: LOGGER_LEVEL,
@@ -63,3 +65,5 @@ server.on('error', err => {
   Logger.warn(chalk.yellow(err.message));
   Logger.info(err.stack);
 });
+
+module.exports = server;
