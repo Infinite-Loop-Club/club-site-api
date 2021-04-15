@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { User } from 'models';
-import { userArray } from './user.constants';
+import { userArray } from './constants/user';
 
 let server;
 
@@ -268,7 +268,7 @@ describe('/user/', () => {
     });
   });
 
-  describe('GET /getCSV', () => {
+  describe('POST /getCSV', () => {
     let token;
     let type;
 
