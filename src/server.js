@@ -26,7 +26,7 @@ Logger.useDefaults({
 
 const app = express();
 
-app.use(requestLogger);
+if (NODE_ENV !== 'test') app.use(requestLogger);
 app.use(cors());
 app.use(express.json());
 
