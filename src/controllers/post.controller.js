@@ -1,7 +1,7 @@
 import Logger from 'js-logger';
 import Mongoose from 'mongoose';
 
-import { Post, validatePost, User } from 'models';
+import { Post, validatePost } from 'models';
 
 /**
  ** New Post
@@ -70,6 +70,9 @@ export const getPostById = async (req, res) => {
     }
 
     const post = await Post.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not exist' });
+    }
     return res.status(200).json({ message: 'Post retrieved', data: post });
   } catch (error) {
     Logger.error('Error retrieving post', error);
@@ -100,7 +103,10 @@ export const deletePost = async (req, res) => {
       return res.status(400).json({ message: '"id" must be valid' });
     }
 
-    await User.findByIdAndDelete(id);
+    const post = await Post.findByIdAndDelete(id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not exist' });
+    }
     Logger.debug('Post deleted successfully.');
     return res.status(200).json({ message: 'Successfully deleted' });
   } catch (err) {

@@ -4,7 +4,7 @@ import { deletePost, getPostById, getPosts, newPost } from 'controllers/post.con
 
 const router = Router();
 
-router.post('/new', newPost);
+router.post('/new', adminOnly, newPost);
 router.get('/all', getPosts);
 router.get('/:id', getPostById);
 router.delete('/delete', adminOnly, deletePost);
