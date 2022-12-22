@@ -26,7 +26,7 @@
     "express": "^4.17.1",
     "joi": "^17.4.0",
     "js-logger": "^1.6.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.12.2",
     "morgan": "^1.10.0",
     "nodemailer": "^6.5.0"
